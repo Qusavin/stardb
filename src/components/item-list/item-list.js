@@ -1,23 +1,34 @@
-import React, { Component } from 'react';
+import React from 'react';
+
+import SwapiService from '../../services/swapi-service';
+import { withData, } from '../hoc-helper';
 
 import './item-list.css';
 
 
-export default class ItemList extends Component {
+const ItemList = (props) => {
 
-	render() {
+	const { data, onItemSelected, children: renderLabel, } = props;
+	const items = data.map(item => {
+		const { id, } = item,
+			label = renderLabel(item);
+
 		return (
-			<ul className="item-list list-group">
-				<li className="list-group-item">
-					Luke Skywalker
-				</li>
-				<li className="list-group-item">
-					Darth Vader
-				</li>
-				<li className="list-group-item">
-					R2-D2
-				</li>
-			</ul>
+			<li key={id}
+				className="list-group-item"
+				onClick={() => onItemSelected(id)}>
+				{label}
+			</li>
 		);
-	}
-}
+	});
+
+	return (
+		<ul className="item-list list-group">
+			{items}
+		</ul>
+	);
+};
+
+const { getAllPeople, } = new SwapiService();
+
+export default withData(ItemList, getAllPeople);
