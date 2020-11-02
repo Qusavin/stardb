@@ -1,4 +1,4 @@
-import React, { Component, } from 'react';
+import React from 'react';
 
 import './item-details.css';
 
@@ -12,65 +12,32 @@ const Record = ({ item, field, label, }) => {
 	);
 };
 
+const ItemDetails = (props) => {
+	const { image, item, } = props;
+
+	return (
+		<div className="item-details card">
+			<img className="item-image"
+				src={image}
+				alt="something wrong"/>
+
+			<div className="card-body">
+				<h4>{item.name}</h4>
+				<ul key={item.id} className="list-group list-group-flush">
+					{
+						React.Children.map(props.children, child => {
+							return React.cloneElement(child, { item, });
+						})
+					}
+				</ul>
+			</div>
+		</div>
+	);
+};
+
 export {
 	Record,
 };
 
-export default class ItemDetails extends Component {
+export default ItemDetails;
 
-	state = {
-		item : null,
-		image: null,
-	}
-
-	componentDidMount() {
-		this.updateItem();
-	}
-
-	componentDidUpdate(prevProps) {
-		if (prevProps !== this.props) {
-			this.updateItem();
-		}
-	}
-
-	updateItem() {
-		const { itemId, getData, getImageUrl, } = this.props;
-		if (!itemId) {
-			return;
-		}
-
-		getData(itemId)
-			.then(item => {
-				this.setState({
-					item, image: getImageUrl(item),
-				});
-			});
-	}
-
-	render() {
-		const { item, image, } = this.state;
-
-		if (!item) {
-			return <span>Select a person from a list</span>;
-		}
-
-		return (
-			<div className="item-details card">
-				<img className="item-image"
-					src={image}
-					alt="something wrong"/>
-
-				<div className="card-body">
-					<h4>{item.name}</h4>
-					<ul className="list-group list-group-flush">
-						{
-							React.Children.map(this.props.children, child => {
-								return React.cloneElement(child, { item, });
-							})
-						}
-					</ul>
-				</div>
-			</div>
-		);
-	}
-}

@@ -1,65 +1,70 @@
 import React, { Component, } from 'react';
 
+import DummySwapiService from '../../services/dummy-swapi-service';
 import SwapiService from '../../services/swapi-service';
 import ErrorBoundry from '../error-boundry';
 
-import ErrorButton from '../error-button';
 import ErrorIndicator from '../error-indicator';
 import Header from '../header';
-import PeoplePage from '../people-page';
+import {
+	PeoplePage,
+	PlanetPage,
+	StarshipPage,
+} from '../pages';
 import RandomPlanet from '../random-planet';
+import { SwapiServiceProvider, } from '../swapi-service-context';
 
 import './app.css';
 
 
 export default class App extends Component {
-	swapiService = new SwapiService();
-
 	state = {
-		showRandomPlanet: true,
-		hasError        : false,
+		hasError    : false,
+		swapiService: new SwapiService(),
 	}
 
 	componentDidCatch() {
 		this.setState({ hasError: true, });
 	}
 
-	toggleRandomPlanet = () => {
-		this.setState(({ showRandomPlanet, }) => {
+	onServiceChange = () => {
+		this.setState(({ swapiService, }) => {
+			const Service = swapiService instanceof SwapiService
+				? DummySwapiService
+				: SwapiService;
+
+			console.log('Switch on ', Service);
+
 			return {
-				showRandomPlanet: !showRandomPlanet,
+				swapiService: new Service(),
 			};
 		});
 	}
 
 	render() {
-		const { showRandomPlanet, hasError, } = this.state;
+		const {
+			hasError,
+			swapiService,
+		} = this.state;
 
 		if (hasError) {
 			return <ErrorIndicator />;
 		}
 
-		const planet = showRandomPlanet ? <RandomPlanet /> : null;
-
 		return (
 			<ErrorBoundry>
-				<div className="app">
-					<Header />
+				<SwapiServiceProvider value={swapiService}>
+					<div className="app">
+						<Header onServiceChange={this.onServiceChange}/>
 
-					{planet}
+						<RandomPlanet />
 
-					<div className='row mb2 button-row'>
-						<button
-							className="btn btn-warning btn-lg"
-							onClick={this.toggleRandomPlanet}>
-							Toggle Random Planet
-						</button>
+						<PeoplePage />
+						<PlanetPage />
+						<StarshipPage />
 
-						<ErrorButton />
 					</div>
-
-					<PeoplePage />
-				</div>
+				</SwapiServiceProvider>
 			</ErrorBoundry>
 		);
 	}
