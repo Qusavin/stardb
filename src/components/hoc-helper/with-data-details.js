@@ -36,12 +36,12 @@ const withDataDetails = (View) => {
 					this.setState({
 						item, image: getImageUrl(item), loading: false,
 					});
-				});
+				})
+				.catch(e => {});
 		}
 
 		render() {
 			const { item, image, loading, } = this.state;
-
 
 			if (!item) {
 				return <span>Select a person from a list</span>;

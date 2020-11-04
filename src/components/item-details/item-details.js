@@ -5,9 +5,9 @@ import './item-details.css';
 
 const Record = ({ item, field, label, }) => {
 	return (
-		<li className="list-group-item">
+		<li key={+new Date() + Math.random()} className="list-group-item">
 			<span className="term">{label}</span>
-			<span>{item[field]}</span>
+			<span >{item[field]}</span>
 		</li>
 	);
 };
@@ -23,9 +23,9 @@ const ItemDetails = (props) => {
 
 			<div className="card-body">
 				<h4>{item.name}</h4>
-				<ul key={item.id} className="list-group list-group-flush">
+				<ul className="list-group list-group-flush">
 					{
-						React.Children.map(props.children, child => {
+						React.Children.map(props.children, (child) => {
 							return React.cloneElement(child, { item, });
 						})
 					}

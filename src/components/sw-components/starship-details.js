@@ -3,15 +3,16 @@ import React from 'react';
 import {
 	withSwapiService,
 	withElementDetails,
+	withDataDetails,
 	compose,
 } from '../hoc-helper';
 import ItemDetails, { Record, } from '../item-details';
 
 
 const starshipElements = [
-	<Record field="model" label="Model" />,
-	<Record field="length" label="Length" />,
-	<Record field="costInCredits" label="Cost" />,
+	<Record key={1} field="model" label="Model" />,
+	<Record key={2} field="length" label="Length" />,
+	<Record key={3} field="costInCredits" label="Cost" />,
 ];
 
 const mapMethodsToProps = (swapiService) => {
@@ -24,5 +25,6 @@ const mapMethodsToProps = (swapiService) => {
 
 export default compose(
 	withSwapiService(mapMethodsToProps),
-	withElementDetails(starshipElements)
+	withElementDetails(starshipElements),
+	withDataDetails
 )(ItemDetails);

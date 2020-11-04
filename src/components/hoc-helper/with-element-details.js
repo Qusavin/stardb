@@ -1,16 +1,12 @@
 import React from 'react';
 
-import withDataDetails from './with-data-details';
-
-
 
 const withElementDetails = (elements) => (Wrapped) =>  {
-	const Details = withDataDetails(Wrapped);
 	return (props) => {
 		return (
-			<Details {...props}>
+			<Wrapped {...props}>
 				{elements}
-			</Details>
+			</Wrapped>
 		);
 	};
 };
